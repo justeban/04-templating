@@ -5,28 +5,41 @@ let articleView = {};
 // TODO: Where possible, refactor methods into arrow functions, including the document.ready() method at the bottom.
 
 // COMMENT: How do arrow functions affect the context of "this"? How did you determine if a function could be refactored?
-// PUT YOUR RESPONSE HERE
+// Arrow functions make the 'this' the outer contextual-this, rather than the immediate function. Any functions that included 'this', we didn't refactor as it broke our code.
 
-articleView.populateFilters = function() {
+articleView.populateFilters = ()=> {
   $('article').each(function() {
+    let authorObj = {};
+    let categoryObj = {};
+    let authorSrc = $('#author-filter-template').html();
+    let categorySrc = $('#category-filter-template').html();
+    let authorTemplate = Handlebars.compile(authorSrc);
+    let categoryTemplate = Handlebars.compile(categorySrc);
+
     if (!$(this).hasClass('template')) {
-      let val = $(this).find('address a').text();
-      let optionTag = `<option value="${val}">${val}</option>`;
+      let $val = $(this).find('address a').text();
+      authorObj.author = $val;
+      $('#author-filter').append(authorTemplate(authorObj));
+    
+      // let optionTag = `<option value="${$val}">${$val}</option>`;
 
-      if ($(`#author-filter option[value="${val}"]`).length === 0) {
-        $('#author-filter').append(optionTag);
-      }
+      // if ($(`#author-filter option[value="${$val}"]`).length === 0) {
+      //   $('#author-filter').append(optionTag);
+      // }
 
-      val = $(this).attr('data-category');
-      optionTag = `<option value="${val}">${val}</option>`;
-      if ($(`#category-filter option[value="${val}"]`).length === 0) {
-        $('#category-filter').append(optionTag);
-      }
+
+      $val = $(this).attr('data-category');
+      categoryObj.category = $val;
+      $('#category-filter').append(categoryTemplate(categoryObj));
+
+      // if ($(`#category-filter option[value="${$val}"]`).length === 0) {
+      //   $('#category-filter').append(optionTag);
+      // }
     }
   });
 };
 
-articleView.handleAuthorFilter = function() {
+articleView.handleAuthorFilter = ()=> {
   $('#author-filter').on('change', function() {
     if ($(this).val()) {
       $('article').hide();
@@ -39,7 +52,7 @@ articleView.handleAuthorFilter = function() {
   });
 };
 
-articleView.handleCategoryFilter = function() {
+articleView.handleCategoryFilter = ()=>  {
   $('#category-filter').on('change', function() {
     if ($(this).val()) {
       $('article').hide();
@@ -52,7 +65,7 @@ articleView.handleCategoryFilter = function() {
   });
 };
 
-articleView.handleMainNav = function() {
+articleView.handleMainNav = ()=> {
   $('.main-nav').on('click', '.tab', function(e) {
     e.preventDefault();
     $('.tab-content').hide();
@@ -62,24 +75,24 @@ articleView.handleMainNav = function() {
   $('.main-nav .tab:first').click();
 };
 
-articleView.setTeasers = function() {
+articleView.setTeasers = ()=> {
   $('.article-body *:nth-of-type(n+2)').hide();
   $('article').on('click', 'a.read-on', function(e) {
     e.preventDefault();
-    if ($(this).text() === 'Read on →') {
+    if ($(this).text() === 'Read More →') {
       $(this).parent().find('*').fadeIn();
       $(this).html('Show Less &larr;');
     } else {
       $('body').animate({
         scrollTop: ($(this).parent().offset().top)
       },200);
-      $(this).html('Read on &rarr;');
+      $(this).html('Read More &rarr;');
       $(this).parent().find('.article-body *:nth-of-type(n+2)').hide();
     }
   });
 };
 
-$(document).ready(function() {
+$(document).ready(()=> {
   articleView.populateFilters();
   articleView.handleCategoryFilter();
   articleView.handleAuthorFilter();
