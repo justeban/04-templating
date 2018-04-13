@@ -1,6 +1,6 @@
 'use strict';
 
-let rawData = [
+let rawData = [ // eslint-disable-line
   {
     title:       'Bob Ross Ipsum',
     category:    'art',
